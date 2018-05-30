@@ -161,7 +161,7 @@ public class EarthquakeCityMap extends PApplet {
 	// and returns true.  Notice that the helper method isInCountry will
 	// set this "country" property already.  Otherwise it returns false.
 	private boolean isLand(PointFeature earthquake) {
-		
+		//EarthquakeCityMap var = new EarthquakeCityMap();
 		
 		// Loop over all the country markers.  
 		// For each, check if the earthquake PointFeature is in the 
@@ -170,8 +170,12 @@ public class EarthquakeCityMap extends PApplet {
 		// If isInCountry ever returns true, isLand should return true.
 		for (Marker m : countryMarkers) {
 			// TODO: Finish this method using the helper method isInCountry
+			boolean var = isInCountry(earthquake,m);
+			if(var) {return true;}
+			}
 			
-		}
+			
+		
 		
 		
 		// not inside any country
@@ -189,7 +193,24 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// One (inefficient but correct) approach is to:
 		//   Loop over all of the countries, e.g. using 
-		//        for (Marker cm : countryMarkers) { ... }
+				int country_counter = 0;
+		        for (Marker cm : countryMarkers) { 
+		        	String name = (String)cm.getProperty("name");
+		        	int quake_counter = 0;
+		        	//String name = (String)cm.getProperty("name");
+		        	
+		        	for (Marker m : quakeMarkers) { 
+		        		EarthquakeMarker em = (EarthquakeMarker)m;
+		        		if(em.isOnLand) {
+		        			String country = (String)em.getProperty("country");
+		        			country_counter++;
+		        	}
+		        }
+		        	System.out.println(name+" : "+country_counter);
+		        }
+		        //System.out.println(name+" : "+country_counter);
+		        }
+		        
 		//        
 		//      Inside the loop, first initialize a quake counter.
 		//      Then loop through all of the earthquake
@@ -212,7 +233,7 @@ public class EarthquakeCityMap extends PApplet {
 		//        String country = (String)m.getProperty("country");
 		
 		
-	}
+	
 	
 	
 	
