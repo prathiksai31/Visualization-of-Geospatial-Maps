@@ -20,7 +20,7 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
+ * @author Sai Prathik
  * Date: July 17, 2015
  * */
 public class EarthquakeCityMap extends PApplet {
@@ -146,6 +146,14 @@ public class EarthquakeCityMap extends PApplet {
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
 		// TODO: Implement this method
+		for(Marker m : markers ) {
+			CommonMarker c_m = (CommonMarker) m;
+			if( c_m.isInside( map ,  mouseX ,  mouseY ) ) {
+				lastSelected = c_m; 
+				c_m.setSelected(true);
+				return ;
+			}
+		}
 	}
 	
 	/** The event handler for mouse clicks
@@ -159,6 +167,10 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		if (lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		}
 	}
 	
 	

@@ -94,6 +94,11 @@ public abstract class EarthquakeMarker extends CommonMarker
 	public void showTitle(PGraphics pg, float x, float y)
 	{
 		// TODO: Implement this method
+		String title = getTitle();
+		pg.pushStyle();
+		pg.fill(25);
+		pg.rect(10, 10, 10, 10);
+		pg.popStyle();
 		
 	}
 
