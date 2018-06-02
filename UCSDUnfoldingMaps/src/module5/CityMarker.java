@@ -54,17 +54,25 @@ public class CityMarker extends CommonMarker {
 		// TODO: Implement this method
 		String name = getCity();
 		String country = getCountry();
-		float population = getPopulation();
+		String population = ("" +getPopulation() +"millions");
 		pg.pushStyle();
-		pg.fill(25);
-		pg.rect(10, 10, 10, 10);
-		
+		pg.fill(0);
+		pg.textSize(14);
+		pg.text(name, x, y, 200, 20);
+		pg.text(country, x, y+13, 200, 20);
+		pg.text(population, x, y+26, 200, 20);
+		//pg.fill(255);
+		//pg.rect(x, y, 200, 20);
+		//text(name, x, y, 200);
+		//text(name, 10, 10, 70, 80);
 		pg.popStyle();
 		
 	}
 	
 	
 	
+
+
 	/* Local getters for some city properties.  
 	 */
 	public String getCity()
