@@ -2,6 +2,7 @@ package module6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -56,7 +57,10 @@ public class EarthquakeCityMap extends PApplet {
 	// Markers for each city
 	private List<Marker> cityMarkers;
 	// Markers for each earthquake
+	
 	private List<Marker> quakeMarkers;
+	//private List<Marker> sort_marker;
+	private List<EarthquakeMarker> sort_marker;
 
 	// A List of country markers
 	private List<Marker> countryMarkers;
@@ -85,7 +89,7 @@ public class EarthquakeCityMap extends PApplet {
 		//earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		//earthquakesURL = "quiz2.atom";
+		earthquakesURL = "quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -103,15 +107,19 @@ public class EarthquakeCityMap extends PApplet {
 		//     STEP 3: read in earthquake RSS feed
 	    List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
 	    quakeMarkers = new ArrayList<Marker>();
+	    sort_marker = new ArrayList<EarthquakeMarker>();
 	    
 	    for(PointFeature feature : earthquakes) {
 		  //check if LandQuake
 		  if(isLand(feature)) {
 		    quakeMarkers.add(new LandQuakeMarker(feature));
+		    sort_marker.add(new LandQuakeMarker(feature));
 		  }
 		  // OceanQuakes
 		  else {
 		    quakeMarkers.add(new OceanQuakeMarker(feature));
+		    sort_marker.add(new OceanQuakeMarker(feature));
+		    
 		  }
 	    }
 
@@ -123,6 +131,7 @@ public class EarthquakeCityMap extends PApplet {
 	    //           for their geometric properties
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
+	    sortAndPrint(9053);
 	    
 	    
 	}  // End setup
@@ -137,8 +146,24 @@ public class EarthquakeCityMap extends PApplet {
 	
 	
 	// TODO: Add the method:
-	//   private void sortAndPrint(int numToPrint)
 	// and then call that method from setUp
+	
+	   private void sortAndPrint(int numToPrint) {
+		   Collections.sort(sort_marker);
+		   //Object[] sort_array = new Object[200];
+		   Object[] sort_array = sort_marker.toArray();
+		   System.out.println(sort_array.length);
+		   int counter = 0;
+			while(counter < numToPrint) {
+				System.out.println(( (EarthquakeMarker) sort_array[counter]).getTitle());
+				counter++;
+			}
+			   
+		   }
+		   
+		   
+	   
+	
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
