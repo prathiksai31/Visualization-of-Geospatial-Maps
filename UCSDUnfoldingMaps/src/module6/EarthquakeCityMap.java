@@ -15,9 +15,11 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
@@ -53,6 +55,10 @@ public class EarthquakeCityMap extends PApplet {
 	
 	// The map
 	private UnfoldingMap map;
+	private UnfoldingMap currentMap;
+	//private UnfoldingMap map1;
+	private UnfoldingMap map2;
+	private UnfoldingMap map3;
 	
 	// Markers for each city
 	private List<Marker> cityMarkers;
@@ -61,6 +67,8 @@ public class EarthquakeCityMap extends PApplet {
 	private List<Marker> quakeMarkers;
 	//private List<Marker> sort_marker;
 	private List<EarthquakeMarker> sort_marker;
+	
+	private List<EarthquakeMarker> earthquake_image_marker;
 
 	// A List of country markers
 	private List<Marker> countryMarkers;
@@ -68,6 +76,9 @@ public class EarthquakeCityMap extends PApplet {
 	// NEW IN MODULE 5
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
+	
+	// To use image as markers
+	//PImage img;
 	
 	public void setup() {		
 		// (1) Initializing canvas and map tiles
@@ -77,11 +88,19 @@ public class EarthquakeCityMap extends PApplet {
 		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.RoadProvider());
+			map2 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
+		    map3 = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleTerrainProvider());
+		    
+
+		    
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 		    //earthquakesURL = "2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, map);
+		MapUtils.createDefaultEventDispatcher(this, map2, map3);
+		
+		currentMap = map;
 		
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
@@ -89,7 +108,7 @@ public class EarthquakeCityMap extends PApplet {
 		//earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		earthquakesURL = "quiz2.atom";
+		//earthquakesURL = "quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -108,17 +127,21 @@ public class EarthquakeCityMap extends PApplet {
 	    List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
 	    quakeMarkers = new ArrayList<Marker>();
 	    sort_marker = new ArrayList<EarthquakeMarker>();
+	    earthquake_image_marker = new ArrayList<EarthquakeMarker>();
 	    
 	    for(PointFeature feature : earthquakes) {
 		  //check if LandQuake
 		  if(isLand(feature)) {
 		    quakeMarkers.add(new LandQuakeMarker(feature));
 		    sort_marker.add(new LandQuakeMarker(feature));
+		    earthquake_image_marker.add(new LandQuakeMarker(feature));
+		    
 		  }
 		  // OceanQuakes
 		  else {
 		    quakeMarkers.add(new OceanQuakeMarker(feature));
 		    sort_marker.add(new OceanQuakeMarker(feature));
+		    earthquake_image_marker.add(new OceanQuakeMarker(feature));
 		    
 		  }
 	    }
@@ -129,9 +152,18 @@ public class EarthquakeCityMap extends PApplet {
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
 	    //           for their geometric properties
-	    map.addMarkers(quakeMarkers);
-	    map.addMarkers(cityMarkers);
-	    sortAndPrint(9053);
+	    currentMap.addMarkers(quakeMarkers);
+	    currentMap.addMarkers(cityMarkers);
+	    sortAndPrint(705);
+	    
+	    //ImageMarker imgMarker1 = new ImageMarker(earthquake_image_marker, loadImage("earthquake.png"));
+	    
+	    
+	   // currentMap.addMarkers(imgMarker1);
+	   // PImage img;
+	   
+		
+	   // img = loadImage("earthquake.png", "png");
 	    
 	    
 	}  // End setup
@@ -139,7 +171,7 @@ public class EarthquakeCityMap extends PApplet {
 	
 	public void draw() {
 		background(0);
-		map.draw();
+		currentMap.draw();
 		addKey();
 		
 	}
@@ -221,6 +253,34 @@ public class EarthquakeCityMap extends PApplet {
 			}
 		}
 	}
+	
+	public void keyPressed() {
+	    if (key == '1') {
+	        currentMap = map;
+	    } else if (key == '2') {
+	        currentMap = map2;
+	    } else if (key == '3') {
+	    	currentMap = map3;
+	    }
+	    if( key == 'r' || key == 'R') {
+	    	if( currentMap == map ) {
+	    		map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
+	    		currentMap = map;
+	    	}
+	    	else if( currentMap == map2 ) {
+	    		map2 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.AerialProvider());
+	    		currentMap = map2;
+	    	}
+	    	else if( currentMap == map3 ) {
+	    		map3 = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.RoadProvider());
+	    		currentMap = map3;
+	    	}
+	    }
+	    MapUtils.createDefaultEventDispatcher(this, currentMap);
+	    currentMap.addMarkers(quakeMarkers);
+	    currentMap.addMarkers(cityMarkers);
+	}
+
 	
 	// Helper method that will check if a city marker was clicked on
 	// and respond appropriately
